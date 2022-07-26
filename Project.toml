@@ -1,0 +1,10 @@
+name = "DecisionTreesRecipe"
+uuid = "1fa7448c-8018-415c-9278-624f5a245816"
+authors = ["Roland Schätzle <80126696+roland-KA@users.noreply.github.com>"]
+version = "0.1.0"
+
+[deps]
+AbstractTrees = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
+Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
+NetworkLayout = "46757867-2c16-5918-afeb-47bfcb05e46a"
+RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
