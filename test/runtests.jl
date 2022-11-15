@@ -1,8 +1,12 @@
-using Pkg
-Pkg.develop(PackageSpec(path = ("/Users/roland/Library/CloudStorage/OneDrive-adviionGmbH/__Projekte/Julia/GitHub/DecisionTree.jl")))
+"""
+The `DecisionTree`-package is used an example on how to implement the necessary ad-ons 
+in order to make it plottable using the `TreeRecipe`. The following code shows how the
+recipe can be applied to a `DecisionTree`.
+"""
 
 using DecisionTree      
 using Plots  
+using TreeRecipe
 
 """
 Create some test tree
@@ -24,4 +28,9 @@ function make_dtree()
 end
 
 dt = make_dtree()
-infotree = DecisionTree.wrap(dt, (featurenames = feature_names, classlabels = class_labels))
+
+# add information about feature names and class names
+wt = DecisionTree.wrap(dt, (featurenames = feature_names, classlabels = class_labels))
+
+# plot the tree using the `TreeRecipe`
+plot(wt)    # this calls automatically the `TreeRecipe`
