@@ -1,8 +1,11 @@
-using Pkg
-Pkg.develop(PackageSpec(path = ("/Users/roland/Library/CloudStorage/OneDrive-adviionGmbH/__Projekte/Julia/GitHub/BetaML.jl")))
+"""
+Example on how to use the `TreeRecipe` with a decision tree from the BetaML-package.
+These decision trees typically "know" the classnames, so only featurenames have to be added.
+"""
 
 using BetaML      
 using Plots  
+using TreeRecipe
 
 xtrain = [
     "Green"  3.0;
@@ -13,9 +16,14 @@ xtrain = [
 ]
 ytrain = ["Apple",  "Apple", "Grape", "Grape", "Lemon"]
 
-myTree = buildTree(xtrain,ytrain)
+# train (and build) a decision tree
+m = DecisionTreeEstimator()
+yhat_train = fit!(m, xtrain, ytrain)
+dte = m.par.tree
 
-feature_names = ["Intensity", "Color"]
+# add information about feature names 
+feature_names = ["Color", "Intensity"]
+wt = BetaML.wrap(dt, (featurenames = feature_names, ))
 
-wtree = BetaML.wrap(myTree, (featurenames = feature_names, ))
-
+# plot the tree using the `TreeRecipe`
+plot(wt)        # this calls automatically the `TreeRecipe`
