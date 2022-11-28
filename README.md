@@ -1,3 +1,6 @@
+[![Build status (Github Actions)](https://github.com/JuliaAI/TreeRecipe.jl/workflows/CI/badge.svg)](https://github.com/JuliaAI/TreeRecipe.jl/actions)
+[![codecov.io](http://codecov.io/github/JuliaAI/TreeRecipe.jl/coverage.svg?branch=main)](http://codecov.io/github/JuliaAI/TreeRecipe.jl?branch=main)
+
 # TreeRecipe.jl
 
 A Plot recipe for plotting (decision) trees.
