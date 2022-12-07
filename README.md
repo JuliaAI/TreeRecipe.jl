@@ -15,9 +15,12 @@ of trees which conform to the following rules:
   - implement `AbstractTrees.printnode()`
 
 See [`DecisionTree.jl/abstract_trees.jl`](https://github.com/JuliaAI/DecisionTree.jl/blob/9dab9c12fcf2d54d4591b23fc87512964fb664b8/src/abstract_trees.jl) for 
-an exemplary implementation of the concept. In addition there is an example in `test/runstests.jl` that shows how the recipe can be applied to plot a `DecisionTree`.
+an exemplary implementation of the concept. In addition there are examples in the `examples`-folder which show how the recipe can be applied to plot decision trees from the `DecisionTree.jl`-package as well as from the `BetaML.jl`-package.
 
-This approach ensures that a tree implementation can be plotted without having any dependencies to a graphics package and it ensures furthermore, that the recipe is independent of the implementation details of the tree. 
+This approach taken by `TreeRecipe` ensures that a tree implementation can be plotted without having any dependencies to a graphics package and it ensures furthermore, that the recipe is independent of the implementation details of the tree. 
 
 For more information have a look at the article 
 ["If things are not ready to use"](https://towardsdatascience.com/part-iii-if-things-are-not-ready-to-use-59d2db378bec) in *Towards Data Science* where the basic ideas are explained.
+
+And here you get an impression on how a plot of a decision tree might look like (in this case a `DecsionTree` with the Iris dataset):
+
