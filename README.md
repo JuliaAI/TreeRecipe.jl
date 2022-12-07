@@ -24,3 +24,4 @@ For more information have a look at the article
 
 And here you get an impression on how a plot of a decision tree might look like (in this case a `DecsionTree` with the Iris dataset):
 
+<img width="898" alt="image" src="https://user-images.githubusercontent.com/80126696/206247398-ef30b6e2-8fb8-4228-9d35-2bcb7d82bc34.png">
