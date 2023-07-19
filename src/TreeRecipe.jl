@@ -31,7 +31,7 @@ are specified by pairs of such numbers).
 So the recipe applies the following steps to convert a tree into a graphical representation:
 
 1. Flatten
-   The tree is converted in a breadth first order into a list (a `Vector`) of `NodeInfo`s. 
+   The tree is converted in a breadth first order into a list (a `Vector`) of `PlotInfo`s. 
    These elements contain the relevant information for visualizing the tree later on. The indices
    within this array correspond to the above required numbers from 1 to `n` (1 is the root node).
    The functions `flatten` and `add_level!` implement this step. 
@@ -56,7 +56,7 @@ struct PlotInfo
 end
 
 """
-    add_level!(plot_infos::Vector{PlotInfo}, nodes::Vector{AbstractNode}, i_crnt)
+    add_level!(plot_infos::Vector{PlotInfo}, nodes::Vector{AbstractNode}, i_crnt::Integer)
 
 Traverse the tree recursively beginning from the root, level by level, collecting on each level
 all nodes from left to right and adding them to the `plot_infos`-list in form of `PlotInfo`s.
@@ -85,18 +85,18 @@ function add_level!(plot_infos::Vector{PlotInfo}, nodes, i_crnt)
     end
 end
 
-# extract label information from nodes/leaves using `printnode`
+"extract label information from nodes/leaves using `printnode`"
 function label(i::AbstractTrees.AbstractNode)
     io = IOBuffer()
     AbstractTrees.printnode(io, i)
     return(String(take!(io)))
 end
 
-# which type of node is it?
+"Is the node a leaf or a (inner) node?"
 is_leaf(i::AbstractTrees.AbstractNode) = isempty(AbstractTrees.children(i))
 
 """
-    flatten(tree::InfoNode)
+    flatten(tree::AbstractTrees.AbstractNode))
 
 Create a list of all nodes/leaves (converted to `PlotInfo`s) within the `tree` in a breadth first order.
 """
@@ -111,7 +111,7 @@ end
 ### Step 2: Generate layout
 
 """
-    layout()
+    layout(plot_infos::Vector{PlotInfo})
 
 Create a tree layout in form of a list of points (`GeometryBasics.Point2`) based on the list of
 `PlotInfo`s created by `flatten`. The order of the points in the list corresponds to the information in 
@@ -129,7 +129,9 @@ end
 ### Step 3: Make a visual description (using a plot recipe)
 
 """
-Rectangular shape with centerpoint `center` and dimensions `width` and `height`
+    make_rect(center::Point, width::Number, height::Number)
+
+Corner points of a rectangular shape with centerpoint `center` and dimensions `width` and `height`
 """
 function make_rect(center, width, height)
     left, right  = center[1] - width/2.0,  center[1] + width/2.0    # x-coordinates
@@ -138,8 +140,11 @@ function make_rect(center, width, height)
 end
 
 """
+    make_line(parent::Point, child::Point, height::Number)
+
 Line starting at the `parent`s bottom center leading to the `child`s top center.
 `parent` and `child` are the center coordinates of the respective nodes (rectangles).
+`height` is their height.
 """
 function make_line(parent, child, height)
     parent_xbottom, parent_ybottom = parent[1], parent[2] - height/2
@@ -148,7 +153,7 @@ function make_line(parent, child, height)
 end
 
 """
-    tree_visualization(tree::InfoNode)
+    tree_visualization(tree::AbstractNode, width = 0.7, height = 0.7)
 
 Plot recipe to convert a tree (wrapped in an `AbstractNode`) into a graphical representation
 
