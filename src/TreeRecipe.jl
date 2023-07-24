@@ -153,6 +153,13 @@ function make_line(parent, child, height)
 end
 
 """
+    line_center(line)
+
+The center point of `line` (which is a value created by `make_line`).
+"""
+line_center(line) = ((line[1][1] + line[1][2]) / 2, (line[2][1] + line[2][2]) / 2) 
+
+"""
     tree_visualization(tree::AbstractNode, width = 0.7, height = 0.7)
 
 Plot recipe to convert a tree (wrapped in an `AbstractNode`) into a graphical representation
@@ -161,7 +168,7 @@ Note: As it isn't possible to calculate the size of the bounding box of the labe
 printed inside each node rectangle, the default values for `width` and `height` of these 
 rectangles are just a 'good guess'. You may have to adapt them when calling the recipe.
 """
-@recipe function tree_visualization(tree::AbstractTrees.AbstractNode, width = 0.7, height = 0.7)
+@recipe function tree_visualization(tree::AbstractTrees.AbstractNode, width = 0.7, height = 0.7; connector_labels = [])
     # prepare data 
     plot_infos = flatten(tree)
     coords = layout(plot_infos)
@@ -170,27 +177,34 @@ rectangles are just a 'good guess'. You may have to adapt them when calling the 
     framestyle --> :none
     legend --> false
     
+     # for the labels within the rectangles and on the connecting lines
+    anns = plotattributes[:annotations] = [] 
+    annotationcolor --> :brown4
+    annotationfontsize --> 7     
+    draw_conn_labels = length(connector_labels) == length(plot_infos) - 1 
+
     # connecting lines are a series of linear `:curves`
     for i in 2:length(plot_infos) 
         @series begin
             seriestype := :curves
             linecolor --> :silver 
             line = make_line(coords[plot_infos[i].parent_id], coords[i], height)
+            if draw_conn_labels 
+                lx, ly = line_center(line)
+                push!(anns, (lx, ly, (connector_labels[i-1],)))
+            end
             return line
         end
     end
 
     # nodes are a series of rectangular `:shapes`
-    anns = plotattributes[:annotations] = []        # for the labels within the rectangles
     for i in eachindex(coords)
         @series begin
             seriestype := :shape
             fillcolor --> :deepskyblue3
             alpha --> (plot_infos[i].is_leaf ? 0.4 : 0.15)  # plot leaves a bit darker than inner nodes
-            annotationcolor --> :brown4
-            annotationfontsize --> 7
             c = coords[i]
-            push!(anns, (c[1], c[2], (plot_infos[i].print_label,)))
+            push!(anns, (c[1], c[2], (plot_infos[i].print_label,))) # the label within the node
             return make_rect(c, width, height)
         end
     end
