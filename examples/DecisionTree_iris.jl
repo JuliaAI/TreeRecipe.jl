@@ -30,9 +30,8 @@ wt = DecisionTree.wrap(dtree, (featurenames = feature_names,))
 # plotting area are adapted in order to get a visually pleasing output
 p1 = plot(wt, 0.8, 0.7; size = (1400,600))
 
-# plot the same tree with labels on the connector lines
-num_lines = AbstractTrees.treesize(wt) - 1    # the tree has #nodes - 1 connector lines
-p2 = plot(wt, 0.8, 0.7; size = (1400,600), connector_labels = repeat(["yes", "no"], num_lines ÷ 2))
+# plot the same tree with labels on the connecting lines
+p2 = plot(wt, 0.8, 0.7; size = (1400,600), connect_labels = ["yes", "no"])
 
 # show both plots
 display(p1)
