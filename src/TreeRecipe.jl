@@ -153,15 +153,28 @@ function make_line(parent, child, height)
 end
 
 """
-    tree_visualization(tree::AbstractNode, width = 0.7, height = 0.7)
+    line_center(line)
+
+The center point of `line` (which is a value created by `make_line`).
+"""
+line_center(line) = ((line[1][1] + line[1][2]) / 2, (line[2][1] + line[2][2]) / 2) 
+
+"""
+    tree_visualization(tree::AbstractNode, width = 0.7, height = 0.7; connect_labels = [])
 
 Plot recipe to convert a tree (wrapped in an `AbstractNode`) into a graphical representation
 
 Note: As it isn't possible to calculate the size of the bounding box of the label which is
 printed inside each node rectangle, the default values for `width` and `height` of these 
 rectangles are just a 'good guess'. You may have to adapt them when calling the recipe.
+
+If there should be labels on the connecting lines of the tree, they have to be passed 
+via `connect_labels`. If the number of labels given in that parameter is less than the number
+of connecting lines, then the algorithmn just cycles again through the labels available. So
+you have to pass e.g. just `["true", "false"]` to label a binary tree. 
+
 """
-@recipe function tree_visualization(tree::AbstractTrees.AbstractNode, width = 0.7, height = 0.7)
+@recipe function tree_visualization(tree::AbstractTrees.AbstractNode, width = 0.7, height = 0.7; connect_labels = [])
     # prepare data 
     plot_infos = flatten(tree)
     coords = layout(plot_infos)
@@ -170,27 +183,37 @@ rectangles are just a 'good guess'. You may have to adapt them when calling the 
     framestyle --> :none
     legend --> false
     
+     # for the labels within the rectangles and on the connecting lines
+    anns = plotattributes[:annotations] = [] 
+    annotationcolor --> :brown4
+    annotationfontsize --> 7     
+    draw_connect_labels = !isempty(connect_labels)
+    if draw_connect_labels
+        all_connect_labels = collect(Iterators.take(Iterators.cycle(connect_labels), length(plot_infos) - 1 ))
+    end
+
     # connecting lines are a series of linear `:curves`
     for i in 2:length(plot_infos) 
         @series begin
             seriestype := :curves
             linecolor --> :silver 
             line = make_line(coords[plot_infos[i].parent_id], coords[i], height)
+            if draw_connect_labels 
+                lx, ly = line_center(line)
+                push!(anns, (lx, ly, (all_connect_labels[i-1],)))
+            end
             return line
         end
     end
 
     # nodes are a series of rectangular `:shapes`
-    anns = plotattributes[:annotations] = []        # for the labels within the rectangles
     for i in eachindex(coords)
         @series begin
             seriestype := :shape
             fillcolor --> :deepskyblue3
             alpha --> (plot_infos[i].is_leaf ? 0.4 : 0.15)  # plot leaves a bit darker than inner nodes
-            annotationcolor --> :brown4
-            annotationfontsize --> 7
             c = coords[i]
-            push!(anns, (c[1], c[2], (plot_infos[i].print_label,)))
+            push!(anns, (c[1], c[2], (plot_infos[i].print_label,))) # the label within the node
             return make_rect(c, width, height)
         end
     end

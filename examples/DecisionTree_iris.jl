@@ -6,6 +6,7 @@ in order to get a visually pleasing plot of the resulting decision tree.
 using DecisionTree      
 using Plots  
 using TreeRecipe
+import AbstractTrees
 
 # load and prepare the Iris data set
 features, labels = load_data("iris") 
@@ -27,4 +28,11 @@ wt = DecisionTree.wrap(dtree, (featurenames = feature_names,))
 # plot the decision tree (implicitly calling the `TreeRecipe` plot recipe)
 # `width` and `height` of the node rectangles as well as the `size` of the 
 # plotting area are adapted in order to get a visually pleasing output
-plot(wt, 0.8, 0.7; size = (1400,600))
+p1 = plot(wt, 0.8, 0.7; size = (1400,600))
+
+# plot the same tree with labels on the connecting lines
+p2 = plot(wt, 0.8, 0.7; size = (1400,600), connect_labels = ["yes", "no"])
+
+# show both plots
+display(p1)
+display(p2)
