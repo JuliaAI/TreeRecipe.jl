@@ -42,7 +42,7 @@ wt = DecisionTree.wrap(dt, (featurenames = feature_names, classlabels = class_la
 @testset "visual test" begin
     # plot the tree using the `TreeRecipe`
     # this is a rather visual test, to see, if the tree gets plotted correctly
-    plot(wt)    # this calls automatically the `TreeRecipe`
+    plot(wt; connect_labels = ["yes", "no"])    # this calls automatically the `TreeRecipe`
 end
 
 @testset "structural test" begin
